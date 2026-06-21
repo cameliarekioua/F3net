@@ -31,13 +31,15 @@ class F3Net(nn.Module):
                  img_width: int=299, 
                  img_height: int=299, 
                  LFS_window_size: int=10, 
-                 LFS_M: int=6) -> None:
+                 LFS_M: int=6,
+                 pretrained_path: str='') -> None:
         super(F3Net, self).__init__()
         assert img_width == img_height
         self.img_size = img_width
         self.num_classes = num_classes
         self._LFS_window_size = LFS_window_size
         self._LFS_M = LFS_M
+        self.pretrained_path = pretrained_path
         
         
         self.fad_head = FAD_Head(self.img_size)
@@ -59,7 +61,7 @@ class F3Net(nn.Module):
         self.dp = nn.Dropout(p=0.2)
         
     def _init_xcep_fad(self):
-        fad_excep =  return_pytorch04_xception(True)
+        fad_excep =  return_pytorch04_xception(True, self.pretrained_path)
         conv1_data = fad_excep.conv1.weight.data
         # let new conv1 use old param to balance the network
         fad_excep.conv1 = nn.Conv2d(12, 32, 3, 2, 0, bias=False)
@@ -68,7 +70,7 @@ class F3Net(nn.Module):
         return fad_excep
     
     def  _init_xcep_lfs(self): 
-        lfs_excep = return_pytorch04_xception(True)
+        lfs_excep = return_pytorch04_xception(True, self.pretrained_path)
         conv1_data = lfs_excep.conv1.weight.data
         # let new conv1 use old param to balance the network
         lfs_excep.conv1 = nn.Conv2d(self._LFS_M, 32, 3, 1, 0, bias=False)
@@ -168,8 +170,7 @@ class Block(nn.Module):
 
 class Xception(nn.Module):
     """
-    Xception optimized for the ImageNet dataset, as specified in
-    https://arxiv.org/pdf/1610.02357.pdf
+    Xception optimized for the ImageNet dataset
     """
     def __init__(self, num_classes=1000):
         """ Constructor
@@ -228,11 +229,10 @@ def xception(num_classes=1000, pretrained='imagenet'):
 
     return model
 
-def return_pytorch04_xception(pretrained=True):
+def return_pytorch04_xception(pretrained=True, pretrained_path=''):
     model = xception(pretrained=False)
     if pretrained:
-        state_dict = torch.load(
-            '../checkpoints/xception-b5690688.pth')
+        state_dict = torch.load(pretrained_path)
         for name, weights in state_dict.items():
             if 'pointwise' in name:
                 state_dict[name] = weights.unsqueeze(-1).unsqueeze(-1)
