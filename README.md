@@ -18,7 +18,7 @@ F³-Net detects deepfakes by analyzing **frequency-domain artifacts** that remai
 **Requirements:** Python 3.8+, PyTorch 1.10+, CUDA
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/F3Net.git
+git clone https://github.com/cameliarekioua/F3Net.git
 cd F3Net
 python -m venv env
 source env/bin/activate
