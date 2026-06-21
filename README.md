@@ -6,7 +6,7 @@ Reproduction of **"Thinking in Frequency: Face Forgery Detection by Mining Frequ
 
 ## What this repo does
 
-This project reproduces the F³-Net architecture for deepfake detection on the FaceForensics++ dataset (c40 compression level), and provides a web demo to test the model on your own images.
+This project reproduces the F³-Net architecture for deepfake detection on the FaceForensics++ dataset (c40 compression level).
 
 F³-Net detects deepfakes by analyzing **frequency-domain artifacts** that remain detectable even after heavy video compression. The model combines:
 - **FAD** (Frequency-Aware Decomposition): global spectral filtering with learnable frequency bands
